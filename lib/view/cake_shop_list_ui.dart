@@ -1,18 +1,20 @@
+// ignore_for_file: prefer_interpolation_to_compose_strings, unused_import
+ 
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter_cake_shop_app/models/case_shop.dart';
+import 'package:flutter_cake_shop_app/view/cake_shop_detail_ui.dart';
 import 'package:url_launcher/url_launcher.dart';
+ 
 class CakeShopListUi extends StatefulWidget {
   const CakeShopListUi({super.key});
-
+ 
   @override
   State<CakeShopListUi> createState() => _CakeShopListUiState();
 }
-
+ 
 class _CakeShopListUiState extends State<CakeShopListUi> {
-  @override
-// สร้างตัวแปรเก็บรูป
-  // ignore: override_on_non_overriding_member
+  //ตัวแปรเก็บที่อยู่รูปที่จะใช้กับ Slider
   List<String> imgCakeShop = [
     'assets/images/ck01.png',
     'assets/images/ck02.png',
@@ -22,8 +24,8 @@ class _CakeShopListUiState extends State<CakeShopListUi> {
     'assets/images/ck06.png',
     'assets/images/ck07.png',
   ];
-
-// ตัวแปรเก็บข้อมูลร้าน
+ 
+  //ตัวแปรเก็บข้อมูลของร้านแต่ละร้าน
   List<CakeShop> cakeShops = [
     CakeShop(
       name: 'Yellow Spoon Pastry',
@@ -131,36 +133,31 @@ class _CakeShopListUiState extends State<CakeShopListUi> {
       longitude: '100.5705757',
     ),
   ];
-
-Future<void> _makePhoneCall(String phoneNumber) async {
-    final Uri launchUri = Uri(
-      scheme: 'tel',
-      path: phoneNumber,
-    );
-    await launchUrl(launchUri);
-  }
-
+ 
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.purple,
+        backgroundColor: Colors.red,
         title: Text(
           'สายด่วนกินเค้ก',
-          style: TextStyle(color: Colors.white),
+          style: TextStyle(
+            color: Colors.white,
+          ),
         ),
         centerTitle: true,
       ),
       body: Center(
         child: Column(
           children: [
-            // caroselslier
+            //CarouselSlider
             CarouselSlider.builder(
               itemCount: imgCakeShop.length,
               options: CarouselOptions(
-                height: 250,
+                height: 200,
                 autoPlay: true,
                 autoPlayInterval: Duration(seconds: 2),
-                //scrollDirection: Axis.vertical,
+                // scrollDirection: Axis.vertical,
               ),
               itemBuilder: (context, index, realIndex) {
                 return Container(
@@ -175,38 +172,43 @@ Future<void> _makePhoneCall(String phoneNumber) async {
                 );
               },
             ),
-
             //ListView
             Expanded(
               child: ListView.separated(
-                itemCount: cakeShops.length,
-                separatorBuilder: (context, index) => Divider(
-                  color: Colors.redAccent[100],
-                ),
-                itemBuilder: (context, index) {
-                  return ListTile(
-                    onTap: (){
-                      _makePhoneCall(cakeShops[index].phone!);
-                    },
-                    leading: ClipRRect(
-                      borderRadius: BorderRadius.circular(10.0),
-                      child: Image.asset(
-                        'assets/images/'+cakeShops[index].image1!,
+                  itemCount: cakeShops.length,
+                  separatorBuilder: (context, index) => Divider(
+                        color: Colors.red[200],
                       ),
-                    ),
-                    title: Text(
-                      cakeShops[index].name!,
-                    ),
-                    subtitle: Text(
-                      cakeShops[index].phone!,
-                    ),
-                    trailing: Icon(
-                      Icons.info,
-                      color: Colors.redAccent,
-                    ),
-                  );
-                }
-              ),
+                  itemBuilder: (context, index) {
+                    return ListTile(
+                      onTap: () {
+                        //เปิดไปหน้า CakeShopDetailUi แบบย้อนกลับได้ พร้อมกับส่งข้อมูลร้านไปด้วย
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) =>
+                                CakeShopDetailUi(cakeShop: cakeShops[index]),
+                          ),
+                        );
+                      },
+                      leading: ClipRRect(
+                        borderRadius: BorderRadius.circular(10.0),
+                        child: Image.asset(
+                          'assets/images/' + cakeShops[index].image1!,
+                        ),
+                      ),
+                      title: Text(
+                        cakeShops[index].name!,
+                      ),
+                      subtitle: Text(
+                        cakeShops[index].phone!,
+                      ),
+                      trailing: Icon(
+                        Icons.info,
+                        color: Colors.red,
+                      ),
+                    );
+                  }),
             ),
           ],
         ),
